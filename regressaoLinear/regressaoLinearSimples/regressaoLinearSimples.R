@@ -8,7 +8,7 @@ plot(trimestre, venda, col=c('red', 'blue', 'green'))
 #Coeficiente de Correlacao
 cor(trimestre,venda)
 
-#Teste de Hipoteses para a o Coeficiente de Correlacao
+#Teste de Hipoteses para o Coeficiente de Correlacao
 cor.test(trimestre,venda)
 
 #Ajuste do Modelo de Regressao Linear
