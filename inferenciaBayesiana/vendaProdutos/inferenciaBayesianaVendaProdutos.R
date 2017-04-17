@@ -10,7 +10,7 @@ plot(dag)
 
 train.vendaProdutosDataSet = vendaProdutosDataSet[1:200000, c("quantidadeIntervalo", "vendaIntervalo", "desDiaSemana", "codProduto", "codGrupoVenda")]
 
-## Definir todas as vari??veis do conjunto como categoricas
+##Definir todas as variaveis do conjunto como categoricas
 train.vendaProdutosDataSet$quantidadeIntervalo = as.factor(train.vendaProdutosDataSet$quantidadeIntervalo)
 train.vendaProdutosDataSet$vendaIntervalo = as.factor(train.vendaProdutosDataSet$vendaIntervalo)
 train.vendaProdutosDataSet$desDiaSemana = as.factor(train.vendaProdutosDataSet$desDiaSemana)
@@ -19,14 +19,13 @@ train.vendaProdutosDataSet$codGrupoVenda = as.factor(train.vendaProdutosDataSet$
 
 bn_df <- data.frame(train.vendaProdutosDataSet)
 
-
 #Criacao da Rede
 #
 # Algoritmo um hibrido HC (Hill Climbing). 
 #
 # Esses algoritmo foi utilizado por
 # ser representativo em sua categoria
-#e apresentarem bom desempenho se comparado a outros algoritmos
+# e apresentarem bom desempenho se comparado a outros algoritmos
 res <- hc(bn_df)
 g <- graphviz.plot(res)
 
@@ -53,7 +52,6 @@ nAttrs <- list()
 nAttrs$label <- z
 nAttrs
 plot(g, nodeAttrs=nAttrs, attrs=style)
-
 
 
 #Treinamento
