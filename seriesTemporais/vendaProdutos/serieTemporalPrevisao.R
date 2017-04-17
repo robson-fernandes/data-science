@@ -17,13 +17,13 @@ ggplot() + ggtitle()
 titleSerieTemporal <- stri_encode("Series Temporais - Vendas de Produtos", "", "UTF-8")
 autoplot(serieTemporal, main = titleSerieTemporal, xlab="Tempo", ylab="Vendas")
 
-#Previsao - Modelo ARIMA
+#Ajuste - Modelo ARIMA
 fitArima <- auto.arima(serieTemporal)
 
-# Previsao - Modelo Exponencial
+#Ajuste - Modelo Exponencial
 fitExponencial <- ets(serieTemporal)
 
-# Previsao - Modelo TBATS
+#Ajuste - Modelo TBATS
 fitTBats <- tbats(serieTemporal)
 
 fitExponencial$aic
