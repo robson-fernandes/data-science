@@ -68,7 +68,6 @@ fittedbn <- bn.fit(res, data = bn_df, method="mle")
 # Grupo de Vendas = BEBIDAS
 # Produto = KUAT 500ML
 a <- cpquery(fittedbn, 
-             
              event = (vendaIntervalo == "0-50"),
              evidence = (desDiaSemana =="Domingo"  & codGrupoVenda=="1" & codProduto == "10106") )
 
