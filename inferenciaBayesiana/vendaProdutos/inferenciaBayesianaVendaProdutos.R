@@ -27,6 +27,23 @@ bn_df <- data.frame(train.vendaProdutosDataSet)
 # ser representativo em sua categoria
 # e apresentarem bom desempenho se comparado a outros algoritmos
 res <- hc(bn_df)
+resMMHC <- mmhc(bn_df)
+resTabu <- tabu(bn_df)
+
+
+#Avaliacao dos Algoritmos
+cv.hc <- bn.cv(bn_df, bn = "hc", method = "k-fold")
+cv.tabu <- bn.cv(bn_df, bn = "tabu", method = "k-fold")
+cv.mmhc <- bn.cv(bn_df, bn = "mmhc", method = "k-fold")
+cv.hc
+cv.tabu
+cv.mmhc
+
+
+#Avalicao do % de Perda de Predicao na variavel 'vendaIntervalo'
+xval <- bn.cv(bn_df, bn = "hc", loss = "pred", loss.args = list(target = "vendaIntervalo"))
+xval
+
 g <- graphviz.plot(res)
 
 
