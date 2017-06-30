@@ -87,10 +87,10 @@ barplot(dataSetMAPE,
 
 # Previsao do 1 Semestre de 2017
 forecast(fitArima, 6)
-forecast(fitNNetar, 6)
+forecast(fitNeural, 6)
 forecast(fitTBats, 6)
-
+forecast(fitExponencial, 6)
 
 #Plot
 titleForecast <- stri_encode("Previsao de Vendas de Produtos", "", "UTF-8")
-autoplot(forecast(fitArima, 6), main = titleForecast, xlab="Tempo", ylab="Vendas")
+autoplot(forecast(fitTBats, 6), main = titleForecast, xlab="Tempo", ylab="Vendas")
