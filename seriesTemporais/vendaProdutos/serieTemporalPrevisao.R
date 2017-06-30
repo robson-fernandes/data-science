@@ -9,7 +9,7 @@ vendas$venda<- as.numeric(vendas$venda)
 #Serie Temporal
 serieTemporal <- ts(vendas$venda, start=c(2010, 1), end=c(2016, 12), frequency=12)
 
-
+#Teste Estacionariedade
 #p-value < 0.05 = serie é estacionária
 Box.test(serieTemporal, lag=20, type="Ljung-Box")
 
@@ -37,12 +37,15 @@ fitBats <- bats(serieTemporal)
 lambda = BoxCox.lambda(serieTemporal)
 fitNeural <- nnetar(serieTemporal,repeats=1000,lambda=lambda)
 
+
+#AIC
 fitExponencial$aic
 fitArima$aic
 fitTBats$AIC
 fitBats$AIC
 
 #Verificar Sazionalidade
+
 seasonalExponencial <- !is.null(fitExponencial$seasonal)
 seasonalExponencial
 
