@@ -36,9 +36,11 @@ colnames(data) = c('mes',
 
 
 
-a <- as.formula('venda ~ mes + grupoMilkShake + grupoSanduiche + grupoBebida + grupoAcompanhamento')
+formula <- as.formula('venda ~ mes + grupoMilkShake + grupoSanduiche + grupoBebida + grupoAcompanhamento')
 
-fit = neuralnet(a, data=data, 
+fit = neuralnet(formula, 
+                data=data, 
+                linear.output=TRUE,
                 hidden=c(3,2), 
                 threshold =0.01,
                 rep=5)
