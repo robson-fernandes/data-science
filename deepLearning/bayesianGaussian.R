@@ -1,4 +1,4 @@
-library('neuralnet')
+library(bnlearn)
 library(forecast)
 library(StatMeasures)
 
@@ -18,7 +18,6 @@ test.set = test.setOriginal
 test.set$mes <- as.double(test.set$mes)
 test.set <- scale(test.set)
 
-
 #Nova Colecao
 data = cbind(training.set[,"mes"], 
              training.set[,"grupoMilkShake"],
@@ -34,66 +33,38 @@ colnames(data) = c('mes',
                    'grupoAcompanhamento', 
                    'venda')
 
-
-
-formula <- as.formula('venda ~ mes + grupoMilkShake + grupoSanduiche + grupoBebida + grupoAcompanhamento')
-
-fit = neuralnet(formula, 
-                data=data, 
-                linear.output=TRUE,
-                hidden=c(3,2), 
-                threshold =0.01,
-                rep=5,
-                algorithm = "rprop+")
-
-
-plot(fit,
-     col.entry="green",
-     col.hidden="blue",
-     col.out="red"
-     , rep="best")
-
 testdata = test.set[,c("mes","grupoMilkShake" , "grupoSanduiche", "grupoBebida", "grupoAcompanhamento", "venda")]
-
-#predicao
-pred = compute(fit,testdata[,1:5])
+df.testeData = as.data.frame(testdata)
 
 
-index <-  1:5
-escala <- scale(index)
+df.data = as.data.frame(data)
+fit = tabu(df.data)
+
+plot(fit)
 
 
-result = cbind(escala[,1], pred$net.result, testdata[,"venda"])
-colnames(result) = c('Attribute', 'Prediction', 'Actual')
-round(result, 4)
-
-# prepare data for plot 
-x = result[,"Attribute"]
-y_act = result[,"Actual"]
-y_pred = result[,"Prediction"]
-
-par(mfrow=c(1,2))
+fitted <- bn.fit(fit, data = df.data, method="mle")
 
 
+pred = predict(fitted, "venda", df.testeData)  # predicts the value of node C given test set
+cbind(pred, df.testeData[,"venda"])  
 
-# plot actual data
-plot(x, y_act, pch=20, col=2, xlab='Attribute', ylab="Actual")
-lines(x, y_act, col=8, lty=3, lwd=2)
-
-# plot predict data
-plot(x, y_pred, pch=20, col=1, xlab='Attribute', ylab="Predict")
-lines(x, y_pred, col=8, lty=3, lwd=2)
-
+#Funcao Escala para Original
+scaleToOriginal <- function(value,prediction){
+  
+  s <- prediction
+  
+  y.sd = sd(value)
+  y.mean = mean(value)
+  
+  y.net = s * y.sd + y.mean
+  
+  return(y.net)
+}
 
 #Converter Dados em valores originais
 vendaOriginal <- test.setOriginal[,"venda"]
-s <- pred$net.result
-
-y.sd = sd(vendaOriginal)
-y.mean = mean(vendaOriginal)
-
-y.net = s * y.sd + y.mean
-y.net
+y.net = scaleToOriginal(vendaOriginal,pred)
 
 result = cbind(vendaOriginal, y.net)
 colnames(result) = c('Original', 'Previsto')
