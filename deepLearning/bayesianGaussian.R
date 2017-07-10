@@ -38,7 +38,15 @@ df.testeData = as.data.frame(testdata)
 
 
 df.data = as.data.frame(data)
-fit = tabu(df.data)
+fit = rsmax2(df.data)
+
+score(fit, df.data)
+
+#fit <- drop.arc(fit, "venda", "mes")
+#fit <- set.arc(fit, "mes", "venda")
+
+#fit <- set.arc(fit, "grupoMilkShake", "venda")
+#fit <- set.arc(fit, "grupoAcompanhamento", "venda")
 
 plot(fit)
 
