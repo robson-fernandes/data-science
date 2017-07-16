@@ -9,9 +9,8 @@ training.set$mes <- as.double(training.set$mes)
 training.set <- scale(training.set)
 
 
-venda <- training.set[,"venda"]
+venda <- training.set[,"grupoAcompanhamento"]
 
 
-mixmdl = normalmixEM(venda)
-plot(mixmdl,which=2)
-lines(density(wait), lty=2, lwd=2)
+shapiro.test(venda)
+
