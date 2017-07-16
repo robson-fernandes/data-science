@@ -9,7 +9,7 @@ training.set$mes <- as.double(training.set$mes)
 training.set <- scale(training.set)
 
 
-M <- cor(training.set)
+M <- cor(training.set,method = "pearson")
 #Matriz de correlacao - Color
 corrplot(M, method="color")
 
