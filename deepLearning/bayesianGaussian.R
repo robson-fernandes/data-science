@@ -1,14 +1,46 @@
+#Limpa workspace
+ls()
+rm(list=ls())
+
 library(bnlearn)
 library(forecast)
 library(StatMeasures)
 
-dados = read.table('dados.csv', header=TRUE, sep=";")
-attach(dados)
+dados.grupos = read.table('dados-grupos.csv', header=TRUE, sep=";")
+attach(dados.grupos)
 
+dados.vendas = read.table('dados-vendas.csv', header=TRUE, sep=";")
+attach(dados.vendas)
+
+
+dados <-  cbind(dados.grupos$mes, 
+                dados.grupos$quantidadeProduto,
+                dados.vendas$venda, 
+                dados.grupos$grupoMilkShake, 
+                dados.grupos$grupoSanduiche, 
+                dados.grupos$grupoBebida,
+                dados.grupos$grupoAcompanhamento,
+                dados.grupos$grupoPrato,
+                dados.grupos$grupoAdicional,
+                dados.grupos$grupoBrinde,
+                dados.grupos$grupoItensComposicao)
+
+colnames(dados) <- c("mes", 
+                     "quantidadeProduto", 
+                     "venda",
+                     "grupoMilkShake", 
+                     "grupoSanduiche",
+                     "grupoBebida",
+                     "grupoAcompanhamento",
+                     "grupoPrato",
+                     "grupoAdicional",
+                     "grupoBrinde",
+                     "grupoItensComposicao"
+                     )
 
 training.setOriginal <- dados[1:85, ]
 training.set <- training.setOriginal
-training.set$mes <- as.double(training.set$mes)
+training.set[,"mes"] <- as.double(training.set[,"mes"])
 training.set <- scale(training.set)
 
 
@@ -20,33 +52,54 @@ test.set <- scale(test.set)
 
 #Nova Colecao
 data = cbind(training.set[,"mes"], 
+             training.set[,"quantidadeProduto"], 
              training.set[,"grupoMilkShake"],
              training.set[,"grupoSanduiche"], 
              training.set[,"grupoBebida"], 
              training.set[,"grupoAcompanhamento"],
+             training.set[,"grupoPrato"],
+             training.set[,"grupoAdicional"],
+             training.set[,"grupoBrinde"],
              training.set[,"venda"])
 
 colnames(data) = c('mes', 
+                   'quantidadeProduto',
                    'grupoMilkShake', 
                    'grupoSanduiche', 
                    'grupoBebida', 
                    'grupoAcompanhamento', 
+                   "grupoPrato",
+                   "grupoAdicional",
+                   "grupoBrinde",
                    'venda')
 
-testdata = test.set[,c("mes","grupoMilkShake" , "grupoSanduiche", "grupoBebida", "grupoAcompanhamento", "venda")]
+testdata = test.set[,
+                    c('mes', 
+                      'quantidadeProduto',
+                      'grupoMilkShake', 
+                      'grupoSanduiche', 
+                      'grupoBebida', 
+                      'grupoAcompanhamento', 
+                      "grupoPrato",
+                      "grupoAdicional",
+                      "grupoBrinde",
+                      'venda')]
 df.testeData = as.data.frame(testdata)
 
 
 df.data = as.data.frame(data)
 fit = rsmax2(df.data)
 
+acyclic(fit)
+directed(fit)
+
 score(fit, df.data)
 
-#fit <- drop.arc(fit, "venda", "mes")
-#fit <- set.arc(fit, "mes", "venda")
+fit <- drop.arc(fit, "venda", "mes")
+fit <- set.arc(fit, "mes", "venda")
 
-#fit <- set.arc(fit, "grupoMilkShake", "venda")
-#fit <- set.arc(fit, "grupoAcompanhamento", "venda")
+fit <- set.arc(fit, "grupoMilkShake", "venda")
+fit <- set.arc(fit, "grupoAcompanhamento", "venda")
 
 plot(fit)
 
