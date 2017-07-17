@@ -1,6 +1,7 @@
 #Limpa workspace
 ls()
 rm(list=ls())
+graphics.off()
 
 library(bnlearn)
 library(forecast)
@@ -88,18 +89,30 @@ df.testeData = as.data.frame(testdata)
 
 
 df.data = as.data.frame(data)
-fit = rsmax2(df.data)
+fit = mmhc(df.data)
 
 acyclic(fit)
 directed(fit)
 
 score(fit, df.data)
 
+#Ajustes no Grafo
 fit <- drop.arc(fit, "venda", "mes")
-fit <- set.arc(fit, "mes", "venda")
+fit <- drop.arc(fit, "grupoBrinde", "venda")
 
+fit <- set.arc(fit, "mes", "quantidadeProduto")
+
+fit <- set.arc(fit, "quantidadeProduto", "venda")
+
+fit <- set.arc(fit, "grupoSanduiche", "venda")
 fit <- set.arc(fit, "grupoMilkShake", "venda")
 fit <- set.arc(fit, "grupoAcompanhamento", "venda")
+
+#fit <- set.arc(fit, "grupoBrinde", "venda")
+fit <- drop.arc(fit, "quantidadeProduto", "grupoAcompanhamento")
+fit <- drop.arc(fit, "quantidadeProduto", "grupoMilkShake")
+fit <- drop.arc(fit, "quantidadeProduto", "grupoSanduiche")
+fit <- drop.arc(fit, "grupoSanduiche", "grupoMilkShake")
 
 plot(fit)
 

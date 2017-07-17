@@ -1,8 +1,20 @@
+#Limpa workspace
+ls()
+rm(list=ls())
+graphics.off()
+
 #install.packages("plotly")
 library(plotly)
+
+indice <- c("1", "2", "3", "4", "5", "6")
+real <- c("166619.4043", "138880.2904", "152376.5224", "164615.6087", "124614.5398", "97657.1001")
+rbMMHC <- c("165793.6624", "146190.4542", "154297.8381", "147732.8826", "123982.7631", "106765.8654")
+rbHC <- c("146532.5060","143441.3032","153714.0968","144524.4861","133913.9359","122637.1378")
+rbRSMAX2<- c("141351.4578", "144561.6424", "147793.9304", "141119.5400", "137655.9156", "132280.9796")
+
 trace1 <- list(
-  x = c("1", "2", "3", "4", "5", "6"), 
-  y = c("18653", "15497", "17973", "18125", "13559", "10109"), 
+  x = indice, 
+  y = real,
   connectgaps = FALSE, 
   line = list(shape = "spline"), 
   marker = list(opacity = 1), 
@@ -15,8 +27,8 @@ trace1 <- list(
   ysrc = "robs.fernandes:0:09c1d7"
 )
 trace2 <- list(
-  x = c("1", "2", "3", "4", "5", "6"), 
-  y = c("17570.4710", "15115.1073", "18755.8545", "18760.7579", "13930.0441", " 9783.7652"), 
+  x = indice, 
+  y = rbMMHC, 
   line = list(
     shape = "spline", 
     width = 3
@@ -30,8 +42,8 @@ trace2 <- list(
   ysrc = "robs.fernandes:0:662bfe"
 )
 trace3 <- list(
-  x = c("1", "2", "3", "4", "5", "6"), 
-  y = c("19429.4330", "15586.0160", "18572.6032", "19441.4428", "12903.0879", " 7983.4172"), 
+  x = indice, 
+  y = rbHC, 
   line = list(shape = "spline"), 
   mode = "lines+markers", 
   name = "RB - HC", 
@@ -41,7 +53,7 @@ trace3 <- list(
   ysrc = "robs.fernandes:0:dac376"
 )
 trace4 <- list(
-  x = c("1", "2", "3", "4", "5", "6"), 
+  x = indice, 
   y = c("19876.3599", "15310.3814", "19598.7202", "18803.9633", "12640.9136", " 7685.6616"), 
   line = list(shape = "spline"), 
   mode = "lines+markers", 
@@ -52,8 +64,8 @@ trace4 <- list(
   ysrc = "robs.fernandes:0:9b9800"
 )
 trace5 <- list(
-  x = c("1", "2", "3", "4", "5", "6"), 
-  y = c("17205.9730", "14729.9287", "17995.8214", "19046.6093", "14379.7355", "10557.9321"), 
+  x = indice, 
+  y = rbRSMAX2, 
   line = list(shape = "spline"), 
   mode = "lines+markers", 
   name = "RB - RSMAX2", 
@@ -63,7 +75,7 @@ trace5 <- list(
   ysrc = "robs.fernandes:0:73b130"
 )
 trace6 <- list(
-  x = c("1", "2", "3", "4", "5", "6"), 
+  x = indice, 
   y = c("20107.5813", "15332.9123", "19675.5019", "18958.2365", "12504.7816", " 8793.4664"), 
   line = list(shape = "spline"), 
   mode = "lines+markers", 
