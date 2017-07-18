@@ -9,8 +9,10 @@ library(plotly)
 indice <- c("1", "2", "3", "4", "5", "6")
 real <- c("166619.4043", "138880.2904", "152376.5224", "164615.6087", "124614.5398", "97657.1001")
 rbMMHC <- c("165793.6624", "146190.4542", "154297.8381", "147732.8826", "123982.7631", "106765.8654")
-rbHC <- c("146532.5060","143441.3032","153714.0968","144524.4861","133913.9359","122637.1378")
-rbRSMAX2<- c("141351.4578", "144561.6424", "147793.9304", "141119.5400", "137655.9156", "132280.9796")
+rbHC <- c("146532.5", "143441.3", "153714.1", "144524.5", "133913.9", "122637.1")
+rbRSMAX2 <- c("141351.4578", "144561.6424", "147793.9304", "141119.5400", "137655.9156", "132280.9796")
+rbGS <- c("141351.5", "144561.6", "147793.9", "141119.5", "137655.9", "132281.0")
+rnBackProp <- c("161254.5844", "180900.4149", "175429.3491", "175043.8166", "126090.6017", "116522.7035")
 
 trace1 <- list(
   x = indice, 
@@ -54,10 +56,10 @@ trace3 <- list(
 )
 trace4 <- list(
   x = indice, 
-  y = c("19876.3599", "15310.3814", "19598.7202", "18803.9633", "12640.9136", " 7685.6616"), 
+  y = rbGS, 
   line = list(shape = "spline"), 
   mode = "lines+markers", 
-  name = "RB - Tabu", 
+  name = "RB - GS", 
   type = "scatter", 
   uid = "424c40", 
   xsrc = "robs.fernandes:0:d9ec2c", 
@@ -76,7 +78,7 @@ trace5 <- list(
 )
 trace6 <- list(
   x = indice, 
-  y = c("20107.5813", "15332.9123", "19675.5019", "18958.2365", "12504.7816", " 8793.4664"), 
+  y = rnBackProp, 
   line = list(shape = "spline"), 
   mode = "lines+markers", 
   name = "RN - Backpropagation Resiliente", 
@@ -87,7 +89,7 @@ trace6 <- list(
 )
 data <- list(trace1, trace2, trace3, trace4, trace5, trace6)
 layout <- list(
-  autosize = FALSE, 
+  autosize = TRUE, 
   dragmode = "zoom", 
   hidesources = FALSE, 
   hovermode = "closest", 
@@ -133,7 +135,7 @@ layout <- list(
     tickprefix = "", 
     ticks = "", 
     ticksuffix = "", 
-    title = "Índice", 
+    title = "Indice", 
     titlefont = list(
       color = "#444", 
       family = "\"Open Sans\", verdana, arial, sans-serif", 

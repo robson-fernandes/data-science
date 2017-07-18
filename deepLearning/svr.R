@@ -1,13 +1,14 @@
+#Link
+#https://www.svm-tutorial.com/2014/10/support-vector-regression-r/
+
 #Limpa workspace
 ls()
 rm(list=ls())
 graphics.off()
 
-library(ggplot2)
-library('neuralnet')
-library(forecast)
+#Load Library
+library(e1071)
 library(StatMeasures)
-library(LPAREN)
 
 dados.grupos = read.table('dados-grupos.csv', header=TRUE, sep=";")
 attach(dados.grupos)
@@ -55,7 +56,7 @@ test.set$mes <- as.double(test.set$mes)
 test.set <- scale(test.set)
 
 
-#Nova Colecao
+#Nova Colecao - Treinamento
 data = cbind(training.set[,"mes"], 
              training.set[,"quantidadeProduto"], 
              training.set[,"grupoMilkShake"],
@@ -78,41 +79,67 @@ colnames(data) = c('mes',
                    "grupoBrinde",
                    'venda')
 
+data <- as.data.frame(data)
 
-formula <- as.formula('venda  ~ 
-                                grupoMilkShake + 
-                                grupoSanduiche + 
-                                grupoBebida + 
-                                grupoAcompanhamento + 
-                                grupoPrato + 
-                                grupoAdicional + 
-                                grupoBrinde + 
-                                quantidadeProduto   + 
-                                mes')
+# Colecao de Teste
+data.test = cbind(test.set[,"mes"], 
+             test.set[,"quantidadeProduto"], 
+             test.set[,"grupoMilkShake"],
+             test.set[,"grupoSanduiche"], 
+             test.set[,"grupoBebida"], 
+             test.set[,"grupoAcompanhamento"],
+             test.set[,"grupoPrato"],
+             test.set[,"grupoAdicional"],
+             test.set[,"grupoBrinde"],
+             test.set[,"venda"])
 
+colnames(data.test) = c('mes', 
+                   'quantidadeProduto',
+                   'grupoMilkShake', 
+                   'grupoSanduiche', 
+                   'grupoBebida', 
+                   'grupoAcompanhamento', 
+                   "grupoPrato",
+                   "grupoAdicional",
+                   "grupoBrinde",
+                   'venda')
 
-# fit = neuralnet(formula,
-#                data=data,
-#                linear.output=TRUE,
-#                hidden=c(3,2),
-#                threshold =0.01,
-#                rep=2)
-# algorithm = "rprop+"
+data.test <- as.data.frame(data.test)
 
+svm.Model <- svm(venda  ~ 
+                      grupoMilkShake + 
+                      grupoSanduiche + 
+                      grupoBebida + 
+                      grupoAcompanhamento + 
+                      grupoPrato + 
+                      grupoAdicional + 
+                      grupoBrinde + 
+                      quantidadeProduto   + 
+                      mes, data = data)
 
-if (file.exists("fitNN.rds")) {
- fitNN <- readRDS('fitNN.rds')
- fit <- fitNN
-} else {
- fitNN <- 0
- saveRDS(fit, "fitNN.rds")
-}
+# perform a grid search
+tuneResult <- tune(svm, venda  ~ 
+                     grupoMilkShake + 
+                     grupoSanduiche + 
+                     grupoBebida + 
+                     grupoAcompanhamento + 
+                     grupoPrato + 
+                     grupoAdicional + 
+                     grupoBrinde + 
+                     quantidadeProduto   + 
+                     mes, data = data,
+                   ranges = list(epsilon = seq(0,0.02), cost = 2^(2:8))
+)
+print(tuneResult)
+# Draw the tuning graph
+plot(tuneResult)
 
-plot(fit,
-     col.entry="green",
-     col.hidden="blue",
-     col.out="red"
-     , rep="best")
+summary(svm.Model)
+
+tunedModel <- tuneResult$best.model
+
+p <- predict(tunedModel, data.test)
+
 
 testdata = test.set[,c('mes', 
                        'quantidadeProduto',
@@ -125,15 +152,11 @@ testdata = test.set[,c('mes',
                        "grupoBrinde",
                        'venda')]
 
-#predicao
-pred = compute(fit,testdata[,1:9])
-
-
 index <-  1:9
 escala <- scale(index)
 
 
-result = cbind(escala[,1], pred$net.result, testdata[,"venda"])
+result = cbind(escala[,1], p, testdata[,"venda"])
 colnames(result) = c('Attribute', 'Prediction', 'Actual')
 round(result, 4)
 
@@ -142,21 +165,11 @@ x = result[,"Attribute"]
 y_act = result[,"Actual"]
 y_pred = result[,"Prediction"]
 
-#par(mfrow=c(1,2))
-
-
-# plot actual data
-#plot(x, y_act, pch=20, col=2, xlab='Attribute', ylab="Actual")
-#lines(x, y_act, col=8, lty=3, lwd=2)
-
-# plot predict data
-#plot(x, y_pred, pch=20, col=1, xlab='Attribute', ylab="Predict")
-#lines(x, y_pred, col=8, lty=3, lwd=2)
 
 
 #Converter Dados em valores originais
 vendaOriginal <- test.setOriginal[,"venda"]
-s <- pred$net.result
+s <- p
 
 y.sd = sd(vendaOriginal)
 y.mean = mean(vendaOriginal)

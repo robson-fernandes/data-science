@@ -89,7 +89,7 @@ df.testeData = as.data.frame(testdata)
 
 
 df.data = as.data.frame(data)
-fit = mmhc(df.data)
+fit = rsmax2(df.data)
 
 acyclic(fit)
 directed(fit)
