@@ -1,11 +1,13 @@
 #Limpa workspace
 ls()
 rm(list=ls())
+graphics.off()
 
 library(ggplot2)
 library('neuralnet')
 library(forecast)
 library(StatMeasures)
+library(LPAREN)
 
 dados.grupos = read.table('dados-grupos.csv', header=TRUE, sep=";")
 attach(dados.grupos)
@@ -77,24 +79,34 @@ colnames(data) = c('mes',
                    'venda')
 
 
-formula <- as.formula('venda  ~ mes + 
-                                quantidadeProduto + 
+formula <- as.formula('venda  ~ 
                                 grupoMilkShake + 
                                 grupoSanduiche + 
                                 grupoBebida + 
                                 grupoAcompanhamento + 
                                 grupoPrato + 
                                 grupoAdicional + 
-                                grupoBrinde')
+                                grupoBrinde + 
+                                quantidadeProduto   + 
+                                mes')
 
-fit = neuralnet(formula, 
-                data=data, 
-                linear.output=TRUE,
-                hidden=c(3,2), 
-                threshold =0.01,
-                rep=5,
-                algorithm = "rprop+")
 
+#fit = neuralnet(formula, 
+#                data=data, 
+#                linear.output=TRUE,
+#                hidden=c(3,2), 
+#                threshold =0.01,
+#                rep=3,
+#                algorithm = "rprop+")
+
+
+if (file.exists("fitNN.rds")) {
+  fitNN <- readRDS('fitNN.rds')
+  fit <- fitNN
+} else { 
+  fitNN <- 0
+  saveRDS(fit, "fitNN.rds")
+}
 
 plot(fit,
      col.entry="green",
@@ -130,16 +142,16 @@ x = result[,"Attribute"]
 y_act = result[,"Actual"]
 y_pred = result[,"Prediction"]
 
-par(mfrow=c(1,2))
+#par(mfrow=c(1,2))
 
 
 # plot actual data
-plot(x, y_act, pch=20, col=2, xlab='Attribute', ylab="Actual")
-lines(x, y_act, col=8, lty=3, lwd=2)
+#plot(x, y_act, pch=20, col=2, xlab='Attribute', ylab="Actual")
+#lines(x, y_act, col=8, lty=3, lwd=2)
 
 # plot predict data
-plot(x, y_pred, pch=20, col=1, xlab='Attribute', ylab="Predict")
-lines(x, y_pred, col=8, lty=3, lwd=2)
+#plot(x, y_pred, pch=20, col=1, xlab='Attribute', ylab="Predict")
+#lines(x, y_pred, col=8, lty=3, lwd=2)
 
 
 #Converter Dados em valores originais
