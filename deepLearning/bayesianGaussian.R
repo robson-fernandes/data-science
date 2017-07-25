@@ -39,14 +39,14 @@ colnames(dados) <- c("mes",
                      "grupoItensComposicao"
                      )
 
-training.setOriginal <- dados[1:85, ]
+training.setOriginal <- dados[1:80, ]
 training.set <- training.setOriginal
 training.set[,"mes"] <- as.double(training.set[,"mes"])
 training.set <- scale(training.set)
 
 
 #conjunto de teste
-test.setOriginal <- dados[85:90, ]
+test.setOriginal <- dados[80:90, ]
 test.set = test.setOriginal
 test.set$mes <- as.double(test.set$mes)
 test.set <- scale(test.set)
@@ -89,7 +89,9 @@ df.testeData = as.data.frame(testdata)
 
 
 df.data = as.data.frame(data)
-fit = rsmax2(df.data)
+fit = mmhc(df.data)
+
+bn.fit.cv <- bn.cv(df.data, bn = "mmhc", loss = "cor", loss.args = list(target = "venda"))
 
 acyclic(fit)
 directed(fit)
@@ -108,7 +110,6 @@ fit <- set.arc(fit, "grupoSanduiche", "venda")
 fit <- set.arc(fit, "grupoMilkShake", "venda")
 fit <- set.arc(fit, "grupoAcompanhamento", "venda")
 
-#fit <- set.arc(fit, "grupoBrinde", "venda")
 fit <- drop.arc(fit, "quantidadeProduto", "grupoAcompanhamento")
 fit <- drop.arc(fit, "quantidadeProduto", "grupoMilkShake")
 fit <- drop.arc(fit, "quantidadeProduto", "grupoSanduiche")
