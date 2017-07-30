@@ -1,10 +1,26 @@
-#Limpa workspace
+#
+# Limpa workspace e variáveis
+#
 ls()
 rm(list=ls())
 graphics.off()
 
-library(arm)
+#
+# Pacotes - 
+#
+# <arm>
+# Pacote de análise de dados e modelos hierárquicos de regressão
+#
+# <StatMeasures>
+# Pacote de verificações estatísticas 
+#
+# <plotly>
+# Pacote de visualização de dados
+#
+library(arm) 
 library(StatMeasures)
+library(plotly)
+
 
 dados.grupos = read.table('dados-grupos.csv', header=TRUE, sep=";")
 attach(dados.grupos)
@@ -53,15 +69,14 @@ test.set <- as.data.frame(test.set)
 
 
 fit.bayes <- bayesglm(venda ~ 
-                        mes +
-                        quantidadeProduto  +
-                        grupoMilkShake + 
-                        grupoSanduiche + 
-                        grupoBebida +
-                        grupoAcompanhamento +
-                        grupoPrato + 
-                        grupoAdicional,
-                      
+                      mes +
+                      quantidadeProduto  +
+                      grupoMilkShake + 
+                      grupoSanduiche + 
+                      grupoBebida +
+                      grupoAcompanhamento +
+                      grupoPrato + 
+                      grupoAdicional,
                       family=gaussian(link = "identity"),
                       data=training.set,
                       prior.df= Inf,
@@ -100,30 +115,27 @@ mape <- mape(y = result[, 'original'], yhat = result[, 'previsto'])
 mape*100
 
 
-library(plotly)
+#
+# Função - Visualizar gráfico do modelo
+#
+plotBGLM <- function(ds.resultado)
+{
+  f <- list(family = "Verdana", size = 14, color = "#000000")
+  x <- list( title = "Indice", titlefont = f)
+  y <- list(title = "Venda", titlefont = f)
+  
+  p <- plot_ly(ds.resultado, 
+               x = ~indice,
+               y = ~original, 
+               name = "Original", 
+               type = 'scatter',
+               mode = 'lines') %>%
+    layout(xaxis = x, yaxis = y)  %>%
+    add_trace(y = ~previsto , name = "Modelo Linear Generalizado Bayesiano", connectgaps = TRUE)
+  p
+}
 
-r.df = as.data.frame(result)
 
-f <- list(
-  family = "Verdana",
-  size = 14,
-  color = "#000000"
-)
-x <- list(
-  title = "Indice",
-  titlefont = f
-)
-y <- list(
-  title = "Venda",
-  titlefont = f
-)
+ds.resultado = as.data.frame(result)
 
-p <- plot_ly(r.df, 
-             x = ~indice,
-             y = ~original, 
-             name = "Original", 
-             type = 'scatter',
-             mode = 'lines') %>%
-            layout(xaxis = x, yaxis = y)  %>%
-          add_trace(y = ~previsto , name = "Bayesian Generalized Linear Models", connectgaps = TRUE)
-p
+plotBGLM(ds.resultado)
